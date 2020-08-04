@@ -64,9 +64,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--custom-msbuild-arguments",
         "-m",
-        default="-v:m",
+        default="-v:q",
         help="Custom arguments passed to msbuild.exe "
-        "sets verbosity to minimal by default.",
+        "- sets verbosity to quiet by default.",
     )
     parser.add_argument(
         "--git-obj", "-b", default="", help="the git obj to checkout before building"
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     elif not git_obj.strip() == "":
         print(
             f"running [[[git]]] with args [[[checkout]]] [[[{git_obj}]]] "
-            f"in dir [[[{git_obj}]]]"
+            f"in dir [[[{wx_source_base}]]]"
         )
         os.chdir(wx_source_base)
         subprocess.check_output(["git", "checkout", f"{git_obj}"])
@@ -110,6 +110,12 @@ if __name__ == "__main__":
         system_call_echo(
             f'xcopy /E /I /Y "{wx_source_base}\\lib" "{wx_install_base}\\{git_obj}\\2017\\lib"'
         )
+        system_call_echo(
+            f'xcopy /E /I /Y "{wx_source_base}\\src" "{wx_install_base}\\{git_obj}\\2017\\src"'
+        )
+        system_call_echo(
+            f'xcopy /E /I /Y "{wx_source_base}\\include" "{wx_install_base}\\{git_obj}\\2017\\include"'
+        )
     if buildWithVS2019:
         big_fat_command = f'"{vs2019_build_vars_script}" x86 & '
         big_fat_command += " & ".join(
@@ -120,5 +126,11 @@ if __name__ == "__main__":
         system_call_echo(big_fat_command)
         system_call_echo(
             f'xcopy /E /I /Y "{wx_source_base}\\lib" "{wx_install_base}\\{build_filename(git_obj)}\\2019\\lib"'
+        )
+        system_call_echo(
+            f'xcopy /E /I /Y "{wx_source_base}\\src" "{wx_install_base}\\{build_filename(git_obj)}\\2019\\src"'
+        )
+        system_call_echo(
+            f'xcopy /E /I /Y "{wx_source_base}\\include" "{wx_install_base}\\{build_filename(git_obj)}\\2019\\include"'
         )
 
